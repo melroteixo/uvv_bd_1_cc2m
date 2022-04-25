@@ -1,14 +1,21 @@
-CREATE USER 'vtm' IDENTIFIED BY 'vtm';
+CREATE USER vtm IDENTIFIED BY '';
+
+GRANT ALL PRIVILEGES ON *.* TO vtm;
+--Entrar com senha: vtm
+SYSTEM mysql -u vtm -p;
 
 CREATE DATABASE uvv CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-GRANT ALL PRIVILEGES ON uvv * . * TO 'vtm';
 
-SYSTEM mysql -u vtm -p;
+
+
 
 USE uvv;
 
-CREATE TABLE uvv.funcionario (
+--Conectando ao banco de dados uvv
+USE uvv;
+
+CREATE TABLE funcionario (
                 cpf_funcionario VARCHAR(11) NOT NULL COMMENT 'CPF do funcionário. Será a PK da tabela.',
                 primeiro_nome VARCHAR(15) NOT NULL COMMENT 'Primeiro nome do funcionário.',
                 nome_meio CHAR(1) COMMENT 'Inicial do nome do meio.',
@@ -24,33 +31,33 @@ CREATE TABLE uvv.funcionario (
                 CONSTRAINT cpf_funcionario_pk PRIMARY KEY (cpf_funcionario)
 );
 -- Table comments
-ALTER TABLE uvv.funcionario COMMENT 'Tabela que armazena as informações dos funcionários.';
+ALTER TABLE funcionario COMMENT 'Tabela que armazena as informações dos funcionários. Cpf do funcionario, primeiro nome, segundo nome, ultimo nome, nascimento, endereço, sexo, cpf do supervidor daquele funcionario,salario e numero do departamento';
 -- End Table Funcionario
 
-CREATE TABLE uvv.dependente (
-                nome_dependente VARCHAR(15) NOT NULL COMMENT 'Nome do dependente. Faz parte da PK desta tabela.',
-                cpf_funcionario VARCHAR(11) NOT NULL COMMENT 'CPF do funcionário. Faz parte da PK desta tabela e é uma FK para a tabela funcionário.',
-                sexo CHAR(1) COMMENT 'Sexo do dependente.' 
+CREATE TABLE dependente (
+                nome_dependente VARCHAR(15) NOT NULL COMMENT 'Nome do dependente. É a PK desta tabela,.',
+                cpf_funcionario VARCHAR(11) NOT NULL COMMENT 'CPF do funcionário. É a PK desta tabela e é uma FK da tabela funcionário referenciando cpf_funcionario.',
+                sexo CHAR(1) COMMENT 'Sexo do dependente. Masculino(M/m)/Feminino(F/f)' 
                     CHECK(sexo = 'M' or sexo = 'F' or sexo = 'm' or sexo = 'f'), 	
-                data_nascimento DATE COMMENT 'Data de nascimento do dependente.',
+                data_nascimento DATE COMMENT 'Data de nascimento do dependente. ANO/MES/DIA',
                 parentesco VARCHAR(15) COMMENT 'Descrição do parentesco do dependente com o funcionário.',
                 CONSTRAINT cpf_funcionario_dependente_pk PRIMARY KEY (nome_dependente, cpf_funcionario)
 );
 -- Table comments
-ALTER TABLE uvv.dependente COMMENT 'Tabela que armazena as informações dos dependentes dos funcionários.';
+ALTER TABLE dependente COMMENT 'Tabela que armazena as informações dos dependentes dos funcionários. Nome, cpf do funcionario, sexo, nascimento e parentesco';
 -- End Table dependente
 
 
-CREATE TABLE uvv.departamento (
+CREATE TABLE departamento (
                 numero_departamento INTEGER NOT NULL COMMENT 'Número do departamento. É a PK desta tabela.'
                     CHECK (numero_departamento > 0 AND numero_departamento < 21) ,
-                cpf_gerente VARCHAR(11) NOT NULL COMMENT 'CPF do gerente do departamento. É uma FK para a tabela funcionários.',
+                cpf_gerente VARCHAR(11) NOT NULL COMMENT 'CPF do gerente do departamento. É uma FK para a tabela funcionários referenciando o cpf do funcionario.',
                 nome_departamento VARCHAR(15) NOT NULL COMMENT 'Nome do departamento. Deve ser único.',
-                data_inicio_gerente DATE COMMENT 'Data do início do gerente no departamento.',
+                data_inicio_gerente DATE COMMENT 'Data do início desse gerente nesse departamento.',
                 CONSTRAINT numero_departamento_pk PRIMARY KEY (numero_departamento)
 );
 -- Table comments
-ALTER TABLE uvv.departamento COMMENT 'Tabela que armazena as informaçoẽs dos departamentos.';
+ALTER TABLE departamento COMMENT 'Tabela que armazena as informaçoẽs dos departamentos. Numero do departamento, cpf do gerente, nome do departamento e data de inicio do gerente.';
 -- End Table Departamento
 
 CREATE UNIQUE INDEX departamento_idx
@@ -58,19 +65,20 @@ CREATE UNIQUE INDEX departamento_idx
  ( nome_departamento );
 
 
-CREATE TABLE uvv.localizacoes_departamento (
-                local VARCHAR(50) NOT NULL COMMENT 'Localização do departamento. Faz parte da PK desta tabela.',
+CREATE TABLE localizacoes_departamento (
+                local VARCHAR(50) NOT NULL COMMENT 'Localização do departamento. Faz parte da PK desta tabela. ',
                 numero_departamento INTEGER NOT NULL COMMENT 'Número do departamento. Faz parta da PK desta tabela e também é uma FK para a tabela departamento.',
                 CONSTRAINT numero_departamento_localizacao_pk PRIMARY KEY (local, numero_departamento)
 );
+
 -- Table comments
-ALTER TABLE uvv.localizacoes_departamento COMMENT 'Tabela que armazena as possíveis localizações dos departamentos.';
+ALTER TABLE localizacoes_departamento COMMENT 'Tabela que armazena as possíveis localizações dos departamentos. Localização e numero do departamento';
 -- End Table localizacoes_departamento
 
 
 
 
-CREATE TABLE uvv.projeto (
+CREATE TABLE projeto (
                 numero_projeto INTEGER NOT NULL COMMENT 'Número do projeto. É a PK desta tabela.',
                 numero_departamento INTEGER NOT NULL,
                 nome_projeto VARCHAR(15) NOT NULL COMMENT 'Nome do projeto. Deve ser único.',
@@ -78,7 +86,7 @@ CREATE TABLE uvv.projeto (
                 CONSTRAINT numero_projeto_pk PRIMARY KEY (numero_projeto)
 );
 -- Table comments
-ALTER TABLE uvv.projeto COMMENT 'Tabela que armazena as informações sobre os projetos dos departamentos.';
+ALTER TABLE projeto COMMENT 'Tabela que armazena as informações sobre os projetos dos departamentos.';
 -- End Table Projeto
 
 CREATE UNIQUE INDEX projeto_idx
@@ -86,7 +94,7 @@ CREATE UNIQUE INDEX projeto_idx
  ( nome_projeto );
 
 
-CREATE TABLE uvv.trabalha_em (
+CREATE TABLE trabalha_em (
                 cpf_funcionario VARCHAR(11) NOT NULL COMMENT 'CPF do funcionário. Faz parte da PK desta tabela e é uma FK para a tabela funcionário.',
                 numero_projeto INTEGER NOT NULL COMMENT 'Número do projeto. Faz parte da PK desta tabela e é uma FK para a tabela projeto.',
                 horas NUMERIC(3,1) COMMENT 'Horas trabalhadas pelo funcionário neste projeto.',
@@ -94,9 +102,8 @@ CREATE TABLE uvv.trabalha_em (
 );
 
 -- Table comments
-ALTER TABLE uvv.trabalha_em COMMENT 'Tabela para armazenar quais funcionários trabalham em quais projetos.';
+ALTER TABLE trabalha_em COMMENT 'Tabela para armazenar quais funcionários trabalham em quais projetos.';
 -- End Table trabalha_em
-
 ALTER TABLE uvv.trabalha_em ADD CONSTRAINT funcionario_trabalha_em_fk
 FOREIGN KEY (cpf_funcionario)
 REFERENCES uvv.funcionario (cpf_funcionario)
@@ -153,12 +160,11 @@ ON DELETE SET DEFAULT
 ON UPDATE CASCADE
 ;
 
--- Inserindo objetos
 --Inserindo objetos na tabela funcionario
 INSERT INTO uvv.funcionario
     (primeiro_nome, nome_meio, ultimo_nome, cpf_funcionario, data_nascimento, endereco, sexo, salario, cpf_supervisor, numero_departamento) 
         VALUES
-        ('Jorge'    , 'E'   , 'Brito'    , '88866555576'    , '10-11-1937'  , 'R.do Horto,35,São Paulo,SP'            , 'M' , 55000 , NULL          , 1),
+        ('Jorge'    , 'E'   , 'Brito'    , '88866555576'    , '1937-11-10'  , 'R.do Horto,35,São Paulo,SP'            , 'M' , 55000 , NULL          , 1),
         ('Fernando' , 'T'   , 'Wong'     , '33344555587'    , '1955-12-08'  , 'R.da Lapa,34,São Paulo,SP'             , 'M' , 40000 , '88866555576' , 5),
         ('João'     , 'B'   , 'Silva'    , '12345678966'    , '1965-01-09'  , 'R.das Flores,751,São Paulo,SP'         , 'M' , 30000 , '33344555587' , 5),
         ('Jennifer' , 'S'   , 'Souza'    , '98765432168'    , '1941-06-20'  , 'Av. Arthur de Lima,54,Santo André,SP'  , 'F' , 43000 , '88866555576' , 4),
