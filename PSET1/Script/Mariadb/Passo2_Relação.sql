@@ -1,6 +1,7 @@
 --Conectando ao banco de dados uvv
 USE uvv;
 
+--Inserindo dados na tabela
 CREATE TABLE funcionario (
                 cpf_funcionario VARCHAR(11) NOT NULL COMMENT 'CPF do funcionário. Será a PK da tabela.',
                 primeiro_nome VARCHAR(15) NOT NULL COMMENT 'Primeiro nome do funcionário.',
