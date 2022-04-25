@@ -44,11 +44,44 @@ CREATE TABLE elmasri.funcionario (
                 data_nascimento DATE,
                 endereco VARCHAR(50),
                 sexo CHAR(1) CHECK(sexo = 'M' or sexo = 'F' or sexo = 'm' or sexo = 'f'),
-                cpf_supervisor VARCHAR(11),
+                cpf_supervisor VARCHAR(11) CHECK (cpf_supervisor != cpf_funcionario),
                 salario NUMERIC(10,2),
                 numero_departamento INTEGER NOT NULL,
                 CONSTRAINT cpf_funcionario_pk PRIMARY KEY (cpf_funcionario)
 );
+
+-- Comentarios da tabela funcionario
+comment on
+table funcionario is 'Tabela que armazena as informações dos funcionários.';
+-- Coluna de comentarios
+
+comment on
+column funcionario.cpf is 'CPF do funcionário. Será a PK da tabela.';
+
+comment on
+column funcionario.primeiro_nome is 'Primeiro nome do funcionário.';
+
+comment on
+column funcionario.nome_meio is 'Inicial do nome do meio.';
+
+comment on
+column funcionario.ultimo_nome is 'Sobrenome do funcionário.';
+
+comment on
+column funcionario.endereco is 'Endereço do funcionário.';
+
+comment on
+column funcionario.sexo is 'Sexo do funcionário';
+
+comment on
+column funcionario.salario is 'Salário do funcionário';
+
+comment on
+column funcionario.cpf_supervisor is 'CPF do supervisor. Será uma FK para a própria tabela (um auto-relacionamento).';
+
+comment on
+column funcionario.numero_departamento is 'Número do departamento do funcionário.';
+-- End Table Funcionario
 
 
 CREATE TABLE elmasri.dependente (
@@ -60,6 +93,25 @@ CREATE TABLE elmasri.dependente (
                 CONSTRAINT cpf_funcionario_dependente_pk PRIMARY KEY (nome_dependente, cpf_funcionario)
 );
 
+-- Comentarios da tabela dependentes
+comment on
+table dependente is 'Tabela que armazena as informações dos dependentes dos funcionários.';
+-- Comentario por coluna
+comment on
+column dependente.cpf_funcionario is 'CPF do funcionário. Faz parte da PK desta tabela e é uma FK para a tabela funcionário.';
+
+comment on
+column dependente.nome_dependente is 'Nome do dependente. Faz parte da PK desta tabela.';
+
+comment on
+column dependente.sexo is 'Sexo do dependente.';
+
+comment on
+column dependente.data_nascimento is 'Data de nascimento do dependente.';
+
+comment on
+column dependente.parentesco is 'Descrição do parentesco do dependente com o funcionário.';
+-- Fim dos comentarios da tabela dependentes
 
 CREATE TABLE elmasri.departamento (
                 numero_departamento INTEGER NOT NULL CHECK (numero_departamento > 0 AND numero_departamento < 21),
@@ -74,12 +126,41 @@ CREATE UNIQUE INDEX departamento_idx
  ON elmasri.departamento
  ( nome_departamento );
 
+-- Table comments departamento
+comment on
+table departamento is 'Tabela que armazena as informaçoẽs dos departamentos.';
+-- Coluna de comentarios
+comment on
+column departamento.numero_departamento is 'Número do departamento. É a PK desta tabela.';
+
+comment on
+column departamento.nome_departamento is 'Nome do departamento. Deve ser único.';
+
+comment on
+column departamento.cpf_gerente is 'CPF do gerente do departamento. É uma FK para a tabela funcionários.';
+
+comment on
+column departamento.data_inicio_gerente is 'Data do início do gerente no departamento.';
+-- End departamento
+
+
 CREATE TABLE elmasri.localizacoes_departamento (
                 local VARCHAR(50) NOT NULL,
                 numero_departamento INTEGER NOT NULL,
                 CONSTRAINT numero_departamento_localizacao_pk PRIMARY KEY (local, numero_departamento)
 );
 
+-- Comentarios na tabela localizações departamento
+comment on
+table localizacoes_departamento is 'Tabela que armazena as possíveis localizações dos departamentos.';
+-- Coluna de comentarios
+
+comment on
+column localizacoes_departamento.numero_departamento is 'Número do departamento. Faz parta da PK desta tabela e também é uma FK para a tabela departamento.';
+
+comment on
+column localizacoes_departamento.local is 'Localização do departamento. Faz parte da PK desta tabela.';
+-- End Table localizacoes_departamento
 
 CREATE TABLE elmasri.projeto (
                 numero_projeto INTEGER NOT NULL,
@@ -94,12 +175,46 @@ CREATE UNIQUE INDEX projeto_idx
  ON elmasri.projeto
  ( nome_projeto );
 
+ -- Table comment
+comment on
+table projeto is 'Tabela que armazena as informações sobre os projetos dos departamentos.';
+-- Coluna de comentarios
+
+comment on
+column projeto.numero_projeto is 'Número do projeto. É a PK desta tabela.';
+
+comment on
+column projeto.nome_projeto is 'Nome do projeto. Deve ser único.';
+
+comment on
+column projeto.local_projeto is 'Localização do projeto.';
+
+comment on
+column projeto.numero_departamento is 'Número do departamento. É uma FK para a tabela departamento.';
+-- End Table projeto
+
 CREATE TABLE elmasri.trabalha_em (
                 cpf_funcionario VARCHAR(11) NOT NULL,
                 numero_projeto INTEGER NOT NULL,
                 horas NUMERIC(3,1),
                 CONSTRAINT cpf_funcionario_trabalhaem_pk PRIMARY KEY (cpf_funcionario, numero_projeto)
 );
+
+-- Table comment
+comment on
+table trabalha_em is 'Tabela para armazenar quais funcionários trabalham em quais projetos.';
+-- Coluna de comentarios
+
+comment on
+column trabalha_em.cpf_funcionario is 'CPF do funcionário. Faz parte da PK desta tabela e é uma FK para a tabela funcionário.';
+
+comment on
+column trabalha_em.numero_projeto is 'Número do projeto. Faz parte da PK desta tabela e é uma FK para a tabela projeto.';
+
+comment on
+column trabalha_em.horas is 'Horas trabalhadas pelo funcionário neste projeto.';
+-- End Table trabalha_em
+
 
 
 ALTER TABLE elmasri.trabalha_em ADD CONSTRAINT funcionario_trabalha_em_fk
