@@ -5,7 +5,7 @@
 
 ---
 ## Sobre:
-### Nome: Vinicius Teixeira Melo
+### Alunos: Clícia Pereira de Freitas e Vinícius Teixeira Melo.
 ### Periodo: 2º
 ### Turma: CC2M
 ### Professor: Abrantes Araújo Silva Filho
