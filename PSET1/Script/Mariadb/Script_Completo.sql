@@ -7,10 +7,6 @@ GRANT ALL PRIVILEGES ON uvv.* TO vinicius;
 -- Cria Banco de dados UVV com suas propriedades e permissões
 CREATE DATABASE uvv CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- Entra com o usuário criado no SGBD
-SYSTEM mysql -u vinicius -p;
-
--- colocar senha / senha = "" (nada) 
 
 --Conectando ao banco de dados uvv
 USE uvv;

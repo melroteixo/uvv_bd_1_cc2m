@@ -10,7 +10,7 @@ CREATE ROLE viniciusteixeiramelo
       NOREPLICATION 
       BYPASSRLS
       CONNECTION LIMIT  -1
-      PASSWORD 'vmt';
+      PASSWORD 'vtm';
 
 --create database--
 CREATE DATABASE uvv
