@@ -21,4 +21,4 @@
     *Correções extras*
     - Tipo cpf_funcionario de char para varchar
 
-![Projeto corrigido](Projeto_corrigido.jpeg)
+![Projeto corrigido](Projeto_corrigido.jpg)
