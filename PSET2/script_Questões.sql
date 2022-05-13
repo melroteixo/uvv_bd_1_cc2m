@@ -5,6 +5,9 @@ FROM funcionario AS fun
 INNER JOIN
 departamento AS depa ON depa.numero_departamento = fun.numero_departamento
 GROUP BY depa.nome_departamento;
+
+--inner join = apenas oque ambas tabelas tem em comum
+-- Group by = organizar por X
 -------------------------------------------------------------------
 
 -- Questão 2) prepare um relatório que mostre a média salarial dos homens e das mulheres:
@@ -21,6 +24,9 @@ CAST(AVG(salario) AS DECIMAL(10, 2)) AS "media do salario por sexo"
 FROM funcionario AS fun
 WHERE fun.sexo = 'F'
 GROUP BY fun.sexo; 
+
+-- cast = formatar para um certo tipo (invocar informacao como X)
+-- case = if - then - else - end (caso algo ocorra entao isso deve tbm mudar)
 -------------------------------------------------------------------
 
 -- Questão 3) prepare um relatório que liste o nome dos departamentos e, para cada departamento, inclua as seguintes informações de seus funcionários: 
@@ -43,12 +49,12 @@ departamento AS depa ON (fun.numero_departamento = depa.numero_departamento);
 -- Questão 5) Relatório que apresenta o nome completo dos funcionários, idade, salário atual e o salário reajustado em 20% caso o atual 
 -- seja inferior à 35 mil ou em 15% caso seja superior a esse valor:
 SELECT (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_completo, DATE_PART('year', AGE(fun.data_nascimento)) AS idade, 
-CAST(fun.salario AS DECIMAL(10,2)) AS salario_atual, CAST(fun.salario*1.2 AS DECIMAL(10,2)) AS salario_reajustado
+CAST(fun.salario AS DECIMAL(10,2)) AS "salario atual", CAST(fun.salario*1.2 AS DECIMAL(10,2)) AS "salario pós reajuste"
 FROM funcionario AS fun, departamento AS depa
 WHERE salario < 35000 AND fun.numero_departamento = depa.numero_departamento
 UNION
 SELECT DISTINCT (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_completo, DATE_PART('year', AGE(fun.data_nascimento)) AS idade, 
-CAST(fun.salario AS DECIMAL(10,2)) AS salario_atual, CAST(fun.salario*1.15 AS DECIMAL(10,2)) AS salario_reajustado
+CAST(fun.salario AS DECIMAL(10,2)) AS "salario atual", CAST(fun.salario*1.15 AS DECIMAL(10,2)) AS "salario pós reajuste"
 FROM funcionario AS fun, departamento AS depa
 WHERE salario >= 35000 AND fun.numero_departamento = depa.numero_departamento;
 -------------------------------------------------------------------
@@ -57,7 +63,7 @@ WHERE salario >= 35000 AND fun.numero_departamento = depa.numero_departamento;
 -- e pelo salário dos funcionários (em ordem decrescente):
 SELECT depa.nome_departamento,
 (CASE WHEN(depa.cpf_gerente = '88866555576') THEN 'Jorge E Brito' WHEN(depa.cpf_gerente = '98765432168') THEN 'Jennifer S Souza' WHEN(depa.cpf_gerente = '33344555587') THEN 'Fernando T Wong' END) 
-AS nome_gerente, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_funcionario, fun.salario
+AS "nome do gerente", (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome do funcionario", fun.salario
 FROM departamento AS depa, funcionario AS fun
 WHERE depa.numero_departamento = fun.numero_departamento
 ORDER BY depa.nome_departamento ASC, fun.salario DESC;
@@ -65,7 +71,7 @@ ORDER BY depa.nome_departamento ASC, fun.salario DESC;
 
 -- Questão 7) Relatório com o nome completo dos funcionários que possuem pelo menos um dependente, o departamento onde 
 -- trabalham e o nome completo, idade e sexo do(s) dependente(s):
-SELECT depa.nome_departamento, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_funcionário, dep.nome_dependente, DATE_PART('year', AGE(dep.data_nascimento)) AS idade_dependente, 
+SELECT depa.nome_departamento, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome do funcionário", dep.nome_dependente, DATE_PART('year', AGE(dep.data_nascimento)) AS "idade do dependente", 
 (CASE WHEN(dep.sexo = 'M') THEN 'Masculino' WHEN (dep.sexo = 'F') THEN 'Feminino' END) AS sexo
 FROM funcionario AS fun
 INNER JOIN
@@ -75,14 +81,15 @@ departamento AS depa ON depa.numero_departamento = fun.numero_departamento;
 -------------------------------------------------------------------
 
 -- Questão 8) Relatório com o nome completo, departamento e salário de cada funcionário que não possui dependente:
-SELECT (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_funcionário, d.nome_departamento, 
+SELECT (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome do funcionário", d.nome_departamento, 
 CAST(salario AS DECIMAL(10,2))
 FROM funcionario AS fun, departamento AS d
 WHERE fun.cpf NOT IN (SELECT d.cpf_funcionario FROM dependente AS d) AND d.numero_departamento = fun.numero_departamento;
 -------------------------------------------------------------------
 
 -- Questão 9) Relatório que mostra, para cada departamento, os seus projetos e nome completo de cada funcionário alocado em cada projeto e o número de horas trabalhadas:
-SELECT depa.numero_departamento, pro.nome_projeto, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome do funcionário", CAST(trab.horas AS DECIMAL(3,1)) 
+SELECT depa.numero_departamento, pro.nome_projeto, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome do funcionário", 
+CAST(trab.horas AS DECIMAL(3,1)) 
 FROM funcionario AS fun
 INNER JOIN
 trabalha_em AS trab ON fun.cpf = trab.cpf_funcionario
