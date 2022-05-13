@@ -10,12 +10,14 @@ GROUP BY depa.nome_departamento;
 -- Questão 2) prepare um relatório que mostre a média salarial dos homens e das mulheres:
 
 
-SELECT (CASE WHEN(fun.sexo = 'M') THEN 'Homens' END) AS sexo, CAST(AVG(salario) AS DECIMAL(10, 2)) AS "media do salario por sexo"
+SELECT (CASE WHEN(fun.sexo = 'M') THEN 'Homens' END) AS sexo, 
+CAST(AVG(salario) AS DECIMAL(10, 2)) AS "media do salario por sexo"
 FROM funcionario AS fun
 WHERE fun.sexo = 'M'
 GROUP BY fun.sexo
 UNION
-SELECT (CASE WHEN(fun.sexo = 'F') THEN 'Mulheres' END) AS sexo, CAST(AVG(salario) AS DECIMAL(10, 2)) AS "media do salario por sexo"
+SELECT (CASE WHEN(fun.sexo = 'F') THEN 'Mulheres' END) AS sexo, 
+CAST(AVG(salario) AS DECIMAL(10, 2)) AS "media do salario por sexo"
 FROM funcionario AS fun
 WHERE fun.sexo = 'F'
 GROUP BY fun.sexo; 
@@ -31,7 +33,8 @@ ON depa.numero_departamento = fun.numero_departamento;
 
 
 -- Questão 4) Relatório do nome do departamento e o nome completo, data de nascimento, idade e salário de cada funcionário:
-SELECT depa.nome_departamento, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_completo, fun.data_nascimento, DATE_PART('year', AGE(fun.data_nascimento)) AS idade, CAST(fun.salario AS DECIMAL(10,2))
+SELECT depa.nome_departamento, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_completo, fun.data_nascimento, DATE_PART('year', AGE(fun.data_nascimento)) AS idade, 
+CAST(fun.salario AS DECIMAL(10,2))
 FROM funcionario AS fun
 INNER JOIN
 departamento AS depa ON (fun.numero_departamento = depa.numero_departamento);
@@ -79,7 +82,7 @@ WHERE fun.cpf NOT IN (SELECT d.cpf_funcionario FROM dependente AS d) AND d.numer
 -------------------------------------------------------------------
 
 -- Questão 9) Relatório que mostra, para cada departamento, os seus projetos e nome completo de cada funcionário alocado em cada projeto e o número de horas trabalhadas:
-SELECT depa.nome_departamento, pro.nome_projeto, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_funcionário, CAST(trab.horas AS DECIMAL(3,1)) 
+SELECT depa.numero_departamento, pro.nome_projeto, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome do funcionário", CAST(trab.horas AS DECIMAL(3,1)) 
 FROM funcionario AS fun
 INNER JOIN
 trabalha_em AS trab ON fun.cpf = trab.cpf_funcionario
@@ -91,7 +94,7 @@ ORDER BY depa.nome_departamento ASC, pro.nome_projeto ASC;
 -------------------------------------------------------------------
 
 -- Questão 10) Relatório da soma total das horas de cada projeto em cada departamento, o nome do departamento e do projeto:
-SELECT depa.nome_departamento, pro.nome_projeto, SUM(trab.horas) AS total_horas
+SELECT depa.nome_departamento, pro.nome_projeto, SUM(trab.horas) AS "horas trabalhadas"
 FROM trabalha_em AS trab
 INNER JOIN 
 projeto AS pro ON pro.numero_projeto = trab.numero_projeto
@@ -111,7 +114,7 @@ projeto AS pro ON pro.numero_projeto = trab.numero_projeto;
 -------------------------------------------------------------------
 
 -- Questão 12) Relatório que exibe o nome do departamento, do projeto e o nome dos funcionários que não registraram nenhuma hora trabalhada:
-SELECT depa.nome_departamento, pro.nome_projeto, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_funcionário, 
+SELECT depa.numero_departamento, pro.numero_projeto, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_funcionário, 
 (CASE WHEN(trab.horas IS NULL) THEN 'Nenhuma' END) AS horas_trabalhadas
 FROM funcionario AS fun
 INNER JOIN
