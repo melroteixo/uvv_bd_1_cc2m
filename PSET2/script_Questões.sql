@@ -31,7 +31,7 @@ GROUP BY fun.sexo;
 
 -- Questão 3) prepare um relatório que liste o nome dos departamentos e, para cada departamento, inclua as seguintes informações de seus funcionários: 
 -- o nome completo, a data de nascimento, a idade em anos completos e o salário:
-SELECT depa.nome_departamento, (fun.primeiro_nome||' '||fun.nome_meio||' '||fun.ultimo_nome) AS nome_completo, DATE_PART('year', AGE(fun.data_nascimento)) AS idade, fun.salario
+SELECT depa.nome_departamento, (fun.primeiro_nome||' '||fun.nome_meio||' '||fun.ultimo_nome) AS "nome completo", DATE_PART('year', AGE(fun.data_nascimento)) AS idade, fun.salario
 FROM departamento AS depa
 INNER JOIN funcionario AS fun
 ON depa.numero_departamento = fun.numero_departamento;
@@ -39,7 +39,7 @@ ON depa.numero_departamento = fun.numero_departamento;
 
 
 -- Questão 4) Relatório do nome do departamento e o nome completo, data de nascimento, idade e salário de cada funcionário:
-SELECT depa.nome_departamento, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_completo, fun.data_nascimento, DATE_PART('year', AGE(fun.data_nascimento)) AS idade, 
+SELECT depa.nome_departamento, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome completo", fun.data_nascimento, DATE_PART('year', AGE(fun.data_nascimento)) AS idade, 
 CAST(fun.salario AS DECIMAL(10,2))
 FROM funcionario AS fun
 INNER JOIN
@@ -112,7 +112,7 @@ ORDER BY depa.nome_departamento ASC;
 -------------------------------------------------------------------
 
 -- Questão 11) Relatório do nome completo do funcionário, nome do projeto em que ele trabalha e o valor que ele receberá referente às horas trabalhadas neles, considerando 50 reais por hora:
-SELECT (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_funcionário, pro.nome_projeto, CAST(trab.horas*50 AS DECIMAL (10,2)) AS valor_pagamento
+SELECT (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome do funcionário", pro.nome_projeto, CAST(trab.horas*50 AS DECIMAL (10,2)) AS "valor a ser pago"
 FROM funcionario AS fun
 INNER JOIN
 trabalha_em AS trab ON trab.cpf_funcionario = fun.cpf
@@ -121,8 +121,8 @@ projeto AS pro ON pro.numero_projeto = trab.numero_projeto;
 -------------------------------------------------------------------
 
 -- Questão 12) Relatório que exibe o nome do departamento, do projeto e o nome dos funcionários que não registraram nenhuma hora trabalhada:
-SELECT depa.numero_departamento, pro.numero_projeto, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_funcionário, 
-(CASE WHEN(trab.horas IS NULL) THEN 'Nenhuma' END) AS horas_trabalhadas
+SELECT depa.numero_departamento, pro.numero_projeto, (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome do funcionário", 
+(CASE WHEN(trab.horas IS NULL) THEN 'Nenhuma' END) AS "total de horas trabalhadas"
 FROM funcionario AS fun
 INNER JOIN
 trabalha_em AS trab ON trab.cpf_funcionario = fun.cpf AND trab.horas IS NULL
@@ -142,7 +142,7 @@ ORDER BY idade DESC;
 -------------------------------------------------------------------
 
 -- Questão 14) Relatório que exibe a quantidade de funcionários de cada departamento:
-SELECT depa.nome_departamento, COUNT(fun.cpf) AS numero_funcionarios
+SELECT depa.nome_departamento, COUNT(fun.cpf) AS "numero do funcionario"
 FROM funcionario AS fun
 INNER JOIN
 departamento AS depa ON depa.numero_departamento = fun.numero_departamento
@@ -150,7 +150,7 @@ GROUP BY depa.nome_departamento;
 -------------------------------------------------------------------
 
 -- Questão 15) Relatório com o nome completo dos funcionários, seu departamento e o nome dos projetos em que cada um está alocado:
-SELECT (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS nome_funcionario, depa.nome_departamento, pro.nome_projeto
+SELECT (fun.primeiro_nome ||' '|| fun.nome_meio ||' '|| fun.ultimo_nome) AS "nome do funcionario", depa.nome_departamento, pro.nome_projeto
 FROM funcionario AS fun
 INNER JOIN
 departamento AS depa ON fun.numero_departamento = depa.numero_departamento
@@ -158,5 +158,5 @@ INNER JOIN
 trabalha_em AS trab ON trab.cpf_funcionario = fun.cpf
 INNER JOIN
 projeto AS pro ON pro.numero_projeto = trab.numero_projeto
-ORDER BY nome_funcionario ASC;
+ORDER BY "nome do funcionario" ASC;
 -------------------------------------------------------------------
